@@ -15,6 +15,8 @@ export class StockChartComponent implements OnInit {
   @ViewChild('canvasContainer', { read: ElementRef })
   private canvasContainer: ElementRef<HTMLDivElement>;
   private context = {
+    timeUnit: 'hour',
+    timeStepSize: 3,
     contextType: '2d',
     displayXline: true,
     minX: 0,
@@ -34,27 +36,37 @@ export class StockChartComponent implements OnInit {
     private commonService: CommonService
   ) {}
 
-  ngOnInit(): void {
-    this.stockService.getStockDayList().subscribe((list) => {
-      // console.log(list)
-      this.activeChartDetailList = list;
-      this.drawChart();
-    });
-    // this.stockService.getStockMonthyList().subscribe((list) => {
-    //   // console.log(list)
-    //   this.activeChartDetailList = list;
-    //   this.setChartConfig();
-    //   this.drawChart();
-    // });
-  }
-
   get market(): string {
     return this.commonService.getCurrentMarket();
   }
 
+  ngOnInit(): void {
+    this.stockService.getStockDayList().subscribe((list) => {
+      this.activeChartDetailList = list;
+      this.renderingChart();
+    });
+  }
+
+  switchType(type: number) {
+    switch(type) {
+      case Constants.CHART_SELECTED.DAY:
+        this.context.timeUnit = 'hour';
+        this.context.timeStepSize = 3;
+        break;
+      case Constants.CHART_SELECTED.MONTH:
+        this.context.timeUnit = 'day';
+        this.context.timeStepSize = 7;
+        break;
+    }
+    this.stockService.getStockList(type).subscribe(list => {
+      this.activeChartDetailList = list;
+      this.renderingChart();
+    })
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     console.log('changes', changes);
-    this.drawChart();
+    this.renderingChart();
   }
 
   setChartConfig() {
@@ -110,11 +122,10 @@ export class StockChartComponent implements OnInit {
         };
       }
     );
-    console.log('nick', this.chart.data.datasets[0].data);
     this.chart.update();
   }
 
-  drawChart() {
+  renderingChart() {
     if (this.chart !== undefined) {
       this.chart.destroy();
     }
@@ -122,6 +133,7 @@ export class StockChartComponent implements OnInit {
     if (this.canvas === undefined) {
       this.createCanvas();
     }
+    this.setChartConfig();
     this.createChart();
     this.updateChart();
   }
@@ -200,8 +212,8 @@ export class StockChartComponent implements OnInit {
               time: {
                 parser: 'yyyyMMdd',
                 tooltipFormat: 'HH:mm',
-                unit: 'hour',
-                stepSize: 3,
+                unit: this.context.timeUnit,
+                stepSize: this.context.timeStepSize,
                 displayFormats: {
                   hour: 'H a',
                   day: 'd MMM',

@@ -4,12 +4,22 @@ import { catchError, map } from 'rxjs/operators';
 import { dayChartDetails } from '../../model/dayChartDetails';
 import { monthChartDetails } from '../../model/monthChartDetails';
 import { monthChartDetailsUS } from '../../model/monthChartDetailsUS';
-import { StockChart } from '../../model/type';
+import { Constants, StockChart } from '../../model/type';
 import { RestClient } from '../http/restClient';
 
 @Injectable()
 export class StockService {
   constructor(private http: RestClient) {}
+
+  public getStockList(type: number): Observable<StockChart[]>{
+    switch(type) {
+      case Constants.CHART_SELECTED.DAY:
+       return this.getStockDayList();
+      case Constants.CHART_SELECTED.MONTH:
+        return this.getStockMonthyList();
+    }
+    return of([]);
+  }
 
   public getStockDayList(): Observable<StockChart[]> {
     return this.http.post(this.http.getRequestUrl('stockDayList'), {}).pipe(

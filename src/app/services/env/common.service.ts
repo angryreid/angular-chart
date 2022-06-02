@@ -5,7 +5,7 @@ export class CommonService {
   constructor() {}
 
   getCurrentMarket(): string {
-    return 'hk';
-    // return 'us';
+    // return 'hk';
+    return 'us';
   }
 }

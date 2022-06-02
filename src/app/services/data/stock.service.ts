@@ -1,20 +1,25 @@
 import { Injectable } from '@angular/core';
-import { Observable, of} from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { dayChartDetails } from '../../model/dayChartDetails';
 import { monthChartDetails } from '../../model/monthChartDetails';
 import { monthChartDetailsUS } from '../../model/monthChartDetailsUS';
 import { Constants, StockChart } from '../../model/type';
+import { CommonService } from '../env/common.service';
 import { RestClient } from '../http/restClient';
 
 @Injectable()
 export class StockService {
-  constructor(private http: RestClient) {}
+  constructor(private http: RestClient, private commonService: CommonService) {}
 
-  public getStockList(type: number): Observable<StockChart[]>{
-    switch(type) {
+  get market(): string {
+    return this.commonService.getCurrentMarket();
+  }
+
+  public getStockList(type: number): Observable<StockChart[]> {
+    switch (type) {
       case Constants.CHART_SELECTED.DAY:
-       return this.getStockDayList();
+        return this.getStockDayList();
       case Constants.CHART_SELECTED.MONTH:
         return this.getStockMonthyList();
     }
@@ -36,17 +41,14 @@ export class StockService {
       map((_) => _ as StockChart[]),
       catchError((_err) => {
         // To handle err.
-        return of(monthChartDetails);
-      })
-    );
-  }
-
-  public getStockMonthUSList(): Observable<StockChart[]> {
-    return this.http.post(this.http.getRequestUrl('stockMonthUSList'), {}).pipe(
-      map((_) => _ as StockChart[]),
-      catchError((_err) => {
-        // To handle err.
-        return of(monthChartDetailsUS);
+        switch (this.market) {
+          case 'hk':
+            return of(monthChartDetails);
+          case 'us':
+            return of(monthChartDetailsUS);
+          default:
+            return of([]);
+        }
       })
     );
   }

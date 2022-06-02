@@ -56,6 +56,12 @@ export class StockChartComponent implements OnInit {
     return this.commonService.getCurrentMarket();
   }
 
+  get currentPrice(): string {
+    if (this.activeChartDetailList.length === 0) return '0.00';
+    const current = this.activeChartDetailList[this.activeChartDetailList.length - 1].todayClosePrice;
+    return Number(current).toFixed(2);
+  }
+
   ngOnInit(): void {
     this.switchType(this.slectedType);
   }
@@ -142,7 +148,7 @@ export class StockChartComponent implements OnInit {
       (stock) => {
         return {
           x: Number(stock.stockDatetimeStamp) * 1000,
-          y: Number(stock.todayOpenPrice),
+          y: Number(stock.todayClosePrice),
         };
       }
     );
@@ -167,6 +173,7 @@ export class StockChartComponent implements OnInit {
     if (this.canvasContainer?.nativeElement) {
       const canvas = this.render.createElement('canvas') as HTMLCanvasElement;
       this.render.setAttribute(canvas, 'id', this.canvasId);
+      this.render.addClass(canvas, 'stock-chart');
       console.log(this.canvasContainer);
       this.render.appendChild(this.canvasContainer?.nativeElement, canvas);
       this.canvas = canvas;
@@ -272,7 +279,7 @@ export class StockChartComponent implements OnInit {
               },
               callback: (...args) => {
                 return args[0];
-              },
+              }
             }
           },
           y: {
@@ -288,9 +295,9 @@ export class StockChartComponent implements OnInit {
             grid: {
               borderDash: [2, 5]
             }
-          },
-        },
-      },
+          }
+        }
+      }
     });
   }
 }

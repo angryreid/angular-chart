@@ -6,7 +6,7 @@ import { monthChartDetails } from '../../model/monthChartDetails';
 import { monthChartDetailsUS } from '../../model/monthChartDetailsUS';
 import { Constants, StockChart } from '../../model/type';
 import { CommonService } from '../env/common.service';
-import { RestClient } from '../http/restClient';
+import { RestClient } from '../http/rest-client';
 
 @Injectable()
 export class StockService {

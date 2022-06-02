@@ -1,9 +1,30 @@
-<div>
-  Current Market: {{ market === 'hk' ? 'HK' : 'US' }}
+<div class="stock-chart-main">
+  <div class="stock-chart-header">
+    <div class="header-left">
+      <div class="sub-title">{{ market === "hk" ? "HK" : "US" }}: TENCENT</div>
+      <div class="current-price">{{currentPrice}}</div>
+    </div>
+    <div class="header-right">
+      <div class="base-button-group">
+        <label class="base-button h-25" (click)="switchMarket()">Switch</label>
+      </div>
+    </div>
+  </div>
+  
+  
+
+  <div class="stock-chart-container" #canvasContainer></div>
+
+  <div class="base-button-group m-t-12">
+    <label
+      class="base-button {{ slectedType === 0 ? 'active' : '' }}"
+      (click)="switchType(0)"
+      >Day</label
+    >
+    <label
+      class="base-button {{ slectedType === 1 ? 'active' : '' }}"
+      (click)="switchType(1)"
+      >Month</label
+    >
+  </div>
 </div>
-<button (click)="switchMarket()">Switch Market</button>
-
-<div class="container" #canvasContainer></div>
-
-<button (click)="switchType(0)">Day</button>
-<button (click)="switchType(1)">Month</button>

@@ -35,3 +35,5 @@ let start = getCurrentByTimeZone(Number(list[0].stockDatetimeStamp), this.utcOff
           }
           this.context.dataLabels = labels;
 ```
+
+### 3. Responsive Lable value

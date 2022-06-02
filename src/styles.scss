@@ -1,1 +1,45 @@
 /* You can add global styles to this file, and also import other style files */
+
+@import './assets/styles/reset.scss';
+
+@mixin bg {
+  background-color: rgb(235, 239, 243);
+}
+
+@mixin active {
+  background-color: #123969;
+}
+
+body {
+  @include bg;
+}
+
+.base-button-group {
+  display: flex;
+}
+
+.base-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 18px 6px 18px;
+  @include bg;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  margin-right: 8px;
+  cursor: pointer;
+  color: rgb(58, 71, 82);
+  &.active {
+    @include active;
+    color: white;
+  }
+}
+
+.m-t-12 {
+  margin-top: 12px;
+}
+
+.h-25 {
+  height: 25px;
+}

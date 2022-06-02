@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-import { RestClient } from './services/http/restClient';
+import { RestClient } from './services/http/rest-client';
 import { StockService } from './services/data/stock.service';
 import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';

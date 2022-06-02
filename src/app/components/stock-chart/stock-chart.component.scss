@@ -1,0 +1,35 @@
+.stock-chart-main {
+  margin: 12px;
+  padding: 12px 12px;
+  background-color: white;
+  box-shadow: 0 0 2px 1px rgb(0 0 0 / 3%), 0 2px 4px 0 rgb(0 0 0 / 6%);
+  border-radius: 8px;
+  .stock-chart-header {
+    display: flex;
+    justify-content: space-between;
+    margin: 12px 0;
+    .header-left {
+      .sub-title {
+        font-size: 19px;
+        font-weight: 700;
+        color: rgb(51, 51, 51);
+      }
+      .current-price {
+        line-height: 36px;
+        font-size: 28px;
+        font-weight: 700;
+        color: rgb(9, 19, 28);
+      }
+    }
+    .header-right {
+      display: flex;
+    }
+  }
+  
+  .stock-chart {
+    height: 182px !important;
+  }
+
+  
+}
+

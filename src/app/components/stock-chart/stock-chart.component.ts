@@ -16,6 +16,7 @@ import { enUS } from 'date-fns/locale';
 Chart.register(...registerables);
 // import 'chartjs-adapter-moment';
 import 'chartjs-adapter-date-fns';
+import { getCurrentByTimeZone } from 'src/app/utils/time';
 
 @Component({
   selector: 'app-stock-chart',
@@ -27,7 +28,7 @@ export class StockChartComponent implements OnInit {
   private canvasContainer: ElementRef<HTMLDivElement>;
   private context = {
     timeUnit: 'hour',
-    timeStepSize: 3,
+    timeStepSize: 2,
     contextType: '2d',
     displayXline: true,
     minX: null,
@@ -41,6 +42,7 @@ export class StockChartComponent implements OnInit {
   private canvas: HTMLCanvasElement;
   private chart: Chart;
   private canvasId = 'stockCanvas';
+  private utcOffset: number = null;
   activeChartDetailList: StockChart[] = [];
   slectedType = Constants.CHART_SELECTED.DAY;
 
@@ -58,13 +60,20 @@ export class StockChartComponent implements OnInit {
     this.switchType(this.slectedType);
   }
 
+  switchMarket() {
+    this.commonService.switchMarket();
+    this.switchType(this.slectedType);
+  }
+
   switchType(type: number) {
     this.slectedType = type;
     this.stockService.getStockList(type).subscribe((list) => {
+      if (list.length === 0) return;
+    
       switch (type) {
         case Constants.CHART_SELECTED.DAY:
           this.context.timeUnit = 'hour';
-          this.context.timeStepSize = 3;
+          this.context.timeStepSize = 2;
           this.context.tickAlign = 'start';
           this.context.tooltipFormat = 'HH:mm';
           break;
@@ -82,6 +91,10 @@ export class StockChartComponent implements OnInit {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.renderingChart();
+  }
+
+  setOffsetTimezone() {
+    this.utcOffset = StockRule.market[this.market].timeUtcOffset;
   }
 
   setChartConfig() {
@@ -144,6 +157,7 @@ export class StockChartComponent implements OnInit {
     if (this.canvas === undefined) {
       this.createCanvas();
     }
+    this.setOffsetTimezone();
     this.setChartConfig();
     this.createChart();
     this.updateChart();
@@ -202,19 +216,13 @@ export class StockChartComponent implements OnInit {
                 return tp[0].formattedValue;
               },
               label: (tp) => {
-                // .map((stock) => {
-                //   const time = getCurrentByTimeZone(
-                //     Number(stock.stockDatetimeStamp),
-                //     marketRule.timeUtcOffset
-                //   );
-                //   const newStock: StockChart = {
-                //     ...stock,
-                //     stockDatetimeStamp: (time / 1000) + '',
-                //   };
-                //   return newStock;
-                // })
-                // if ()
-                return tp.label + '12';
+                const offsetTime = getCurrentByTimeZone(tp.raw?.['x'], this.utcOffset);
+                  switch (this.slectedType) {
+                    case Constants.CHART_SELECTED.DAY:
+                      return offsetTime.format('H a');
+                    default:
+                      return offsetTime.format('YYYY/MM/DD');
+                  }
               },
             },
           },
@@ -241,7 +249,7 @@ export class StockChartComponent implements OnInit {
               },
             },
             time: {
-              parser: 'yyyyMMdd HH:mm',
+              parser: 'yyyyMMdd',
               tooltipFormat: this.context.tooltipFormat,
               unit: this.context.timeUnit as any,
               stepSize: this.context.timeStepSize,
@@ -256,6 +264,7 @@ export class StockChartComponent implements OnInit {
             },
             bounds: 'ticks',
             ticks: {
+              // source: 'labels', // ? TODO
               align: this.context.tickAlign as any,
               color: '#056DAE',
               font: {
@@ -264,11 +273,21 @@ export class StockChartComponent implements OnInit {
               callback: (...args) => {
                 return args[0];
               },
-            },
+            }
           },
           y: {
             position: 'right',
             display: true,
+            ticks: {
+              crossAlign: 'near',
+              maxTicksLimit: 3,
+              align: 'end',
+              mirror: true,
+              color: '#3a4752'
+            },
+            grid: {
+              borderDash: [2, 5]
+            }
           },
         },
       },

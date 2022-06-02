@@ -1,6 +1,8 @@
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 
-export const getCurrentByTimeZone = (time: number, offset: number): number => {
-  if (offset === undefined) offset === 0;
-  return moment.utc(time).utcOffset(offset).unix();
-}
+export const getCurrentByTimeZone = (
+  timeStamp: number,
+  offset: number
+): Moment => {
+  return moment.utc(timeStamp).utcOffset(offset || 0);
+};

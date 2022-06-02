@@ -2,10 +2,19 @@ import { Injectable } from '@angular/core';
 
 @Injectable()
 export class CommonService {
+  private market: 'hk' | 'us' = 'hk';
   constructor() {}
 
   getCurrentMarket(): string {
-    // return 'hk';
-    return 'us';
+    return this.market;
+    // return 'us';
+  }
+
+  switchMarket() {
+    if (this.market === 'hk') {
+      this.market = 'us';
+    } else {
+      this.market = 'hk';
+    }
   }
 }

@@ -8,10 +8,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { CommonService } from './services/env/common.service';
 import { StockChartComponent } from './components/stock-chart/stock-chart.component';
+import { GaugeChartComponent } from './components/gauge-chart/gauge-chart/gauge-chart.component';
 
 @NgModule({
   imports: [BrowserModule, CommonModule, HttpClientModule],
-  declarations: [AppComponent, StockChartComponent],
+  declarations: [AppComponent, StockChartComponent, GaugeChartComponent],
   bootstrap: [AppComponent],
   providers: [RestClient, StockService, CommonService],
 })

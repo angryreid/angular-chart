@@ -20,6 +20,7 @@
     "@angular/router": "~13.3.0",
     "chart.js": "^3.8.0",
     "chartjs-adapter-date-fns": "^3.0.0",
+    "chartjs-gauge": "^0.3.0",
     "date-fns": "^2.29.3",
     "moment": "^2.29.4",
     "rxjs": "~7.5.0",
